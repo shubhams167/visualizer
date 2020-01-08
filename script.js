@@ -41,7 +41,7 @@ const getInputArray = () => {
 };
 
 const displayArray = arr => {
-	let gap = 5; // Gap between boxes in px
+	let gap = 0; // Gap between boxes in px
 	let arrayWidth = (boxWidth + gap) * arr.length;
 	let arrayHeight = boxHeight;
 
@@ -102,8 +102,9 @@ const displayArray = arr => {
 };
 
 const clearCanvas = () => {
-	$("#canvas").empty().css('display', 'block');
-
+	$("#canvas")
+		.empty()
+		.css("display", "block");
 };
 
 const bubbleSort = arr => {
@@ -151,6 +152,35 @@ const selectionSort = arr => {
 	}
 };
 
+const insertionSort = arr => {
+	clearCanvas();
+	displayArray(arr);
+	for (let i = 1; i < arr.length; i++) {
+		let key = arr[i];
+		let j = i - 1;
+
+		while (j >= 0 && arr[j] > key) {
+			arr[j + 1] = arr[j];
+			j = j - 1;
+		}
+		arr[j + 1] = key;
+
+		displayArray(arr);
+		// Color already sorted array
+		for (let j = 0; j < i; j++) {
+			$(`.box-${j}`)
+				.eq(i)
+				.attr({ fill: sortedBoxColor });
+		}
+	}
+	displayArray(arr);
+	for (let j = 0; j < arr.length; j++) {
+		$(`.box-${j}`)
+			.eq(arr.length)
+			.attr({ fill: sortedBoxColor });
+	}
+};
+
 // Add event listeners
 $("#btn-sorting-algo").on("click", () => {
 	$("#menu-1").hide();
@@ -172,7 +202,7 @@ $("#btn-menu-close").on("click", () => {
 		200,
 		() => {
 			$("#menu-container").hide();
-			$("#btn-menu-open").css('visibility', 'visible');
+			$("#btn-menu-open").css("visibility", "visible");
 		}
 	);
 	$("body").css("overflow", "auto");
@@ -185,7 +215,7 @@ $("#overlay").on("click", () => {
 $("#btn-menu-open").on("click", () => {
 	$("body").css("overflow", "hidden");
 	$("#overlay").show();
-	$("#btn-menu-open").css('visibility', 'hidden');
+	$("#btn-menu-open").css("visibility", "hidden");
 	$("#menu-container").show();
 	$("#menu-container").animate(
 		{
@@ -213,6 +243,14 @@ $("#btn-bubble-sort").on("click", () => {
 $("#btn-selection-sort").on("click", () => {
 	if (getInputArray()) {
 		selectionSort(inputArray);
+	} else {
+		return false;
+	}
+});
+
+$("#btn-insertion-sort").on("click", () => {
+	if (getInputArray()) {
+		insertionSort(inputArray);
 	} else {
 		return false;
 	}
