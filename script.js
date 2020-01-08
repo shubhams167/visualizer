@@ -10,6 +10,36 @@ const sortedBoxColor = "#26ae60";
 // Variables
 var inputArray;
 
+const getInputArray = () => {
+	let input = $("#input-array").val();
+	if (input === "") {
+		alert("Error: Input array is empty");
+		return false;
+	}
+	inputArray = input.trim().split(/, */);
+
+	// Check if any element is empty
+	let containsEmpty = inputArray.some(element => element === "");
+	if (containsEmpty) {
+		alert("Error: Invalid syntax for input array");
+		return false;
+	}
+	// Check if any element in the array is NaN. If there is then don't parse the array
+	let containsString = inputArray.some(element => isNaN(element));
+	// If array does not contain any string then only try to parse the array
+	if (!containsString) {
+		inputArray = inputArray.map(element => {
+			return parseFloat(element);
+		});
+	} else {
+		inputArray = inputArray.map(element => {
+			return element.trim();
+		});
+	}
+	$("#btn-menu-close").click();
+	return true;
+};
+
 const displayArray = arr => {
 	let gap = 5; // Gap between boxes in px
 	let arrayWidth = (boxWidth + gap) * arr.length;
@@ -72,7 +102,8 @@ const displayArray = arr => {
 };
 
 const clearCanvas = () => {
-	$("#canvas").empty();
+	$("#canvas").empty().css('display', 'block');
+
 };
 
 const bubbleSort = arr => {
@@ -97,6 +128,29 @@ const bubbleSort = arr => {
 	}
 };
 
+const selectionSort = arr => {
+	clearCanvas();
+	displayArray(arr);
+	for (let i = 0; i < arr.length; i++) {
+		let min_idx = i;
+		for (let j = i + 1; j < arr.length; j++) {
+			if (arr[j] < arr[min_idx]) min_idx = j;
+		}
+		// Swap minimum element with first element of unsorted part
+		let temp = arr[min_idx];
+		arr[min_idx] = arr[i];
+		arr[i] = temp;
+
+		displayArray(arr);
+		// Color already sorted array
+		for (let j = 0; j <= i; j++) {
+			$(`.box-${j}`)
+				.eq(i + 1)
+				.attr({ fill: sortedBoxColor });
+		}
+	}
+};
+
 // Add event listeners
 $("#btn-sorting-algo").on("click", () => {
 	$("#menu-1").hide();
@@ -105,6 +159,8 @@ $("#btn-sorting-algo").on("click", () => {
 
 $("#btn-menu-close").on("click", () => {
 	$("#overlay").hide();
+	$(".menu").hide();
+	$("#menu-container").css("box-shadow", "none");
 	$("#menu-container").animate(
 		{
 			height: "30px",
@@ -113,10 +169,10 @@ $("#btn-menu-close").on("click", () => {
 			left: "10px",
 			"border-radius": "50%"
 		},
+		200,
 		() => {
-			$("#menu-container, .menu").hide();
-			$("#btn-menu-open").show();
-			$(this).css("box-shadow", "none");
+			$("#menu-container").hide();
+			$("#btn-menu-open").css('visibility', 'visible');
 		}
 	);
 	$("body").css("overflow", "auto");
@@ -129,44 +185,35 @@ $("#overlay").on("click", () => {
 $("#btn-menu-open").on("click", () => {
 	$("body").css("overflow", "hidden");
 	$("#overlay").show();
-	$("#btn-menu-open").hide();
-	$("#menu-container, #menu-1").show();
-	$("#menu-container").animate({
-		height: "80vh",
-		width: "50vw",
-		top: "10vh",
-		left: "25vw",
-		"border-radius": "10px"
-	});
+	$("#btn-menu-open").css('visibility', 'hidden');
+	$("#menu-container").show();
+	$("#menu-container").animate(
+		{
+			height: "80vh",
+			width: "50vw",
+			top: "10vh",
+			left: "25vw",
+			"border-radius": "10px"
+		},
+		200,
+		() => {
+			$("#menu-1").show();
+		}
+	);
 });
-
-const getInputArray = () => {
-	let input = $("#input-array").val();
-	if (input === "") return false;
-	inputArray = input.trim().split(/, */);
-	console.log(inputArray);
-	// Check if any element in the array is NaN. If there is then don't parse the array
-	let containsString = inputArray.some(element => isNaN(element));
-	// If array does not contain any string then only try to parse the array
-	if (!containsString) {
-		inputArray = inputArray.map(element => {
-			return parseFloat(element);
-		});
-	} else {
-		inputArray = inputArray.map(element => {
-			return element.trim();
-		});
-	}
-	// alert(input);
-	$("#btn-menu-close").click();
-	return true;
-};
 
 $("#btn-bubble-sort").on("click", () => {
 	if (getInputArray()) {
 		bubbleSort(inputArray);
 	} else {
-		alert('Error: Input array is empty');
-		return false
-	};
+		return false;
+	}
+});
+
+$("#btn-selection-sort").on("click", () => {
+	if (getInputArray()) {
+		selectionSort(inputArray);
+	} else {
+		return false;
+	}
 });
