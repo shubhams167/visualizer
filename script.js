@@ -142,16 +142,21 @@ $("#btn-menu-open").on("click", () => {
 
 const getInputArray = () => {
 	let input = $("#input-array").val();
-	if (input === '') return false;
-    inputArray = input.split(/[,\s]/);
-    // Check if any element in the array is NaN. If there is then don't parse the array
+	if (input === "") return false;
+	inputArray = input.trim().split(/, */);
+	console.log(inputArray);
+	// Check if any element in the array is NaN. If there is then don't parse the array
 	let containsString = inputArray.some(element => isNaN(element));
-    // If array does not contain any string then only try to parse the array
-    if(!containsString){
-        inputArray = inputArray.map(element => {
-            return parseFloat(element);
-        });
-    }
+	// If array does not contain any string then only try to parse the array
+	if (!containsString) {
+		inputArray = inputArray.map(element => {
+			return parseFloat(element);
+		});
+	} else {
+		inputArray = inputArray.map(element => {
+			return element.trim();
+		});
+	}
 	// alert(input);
 	$("#btn-menu-close").click();
 	return true;
@@ -160,8 +165,8 @@ const getInputArray = () => {
 $("#btn-bubble-sort").on("click", () => {
 	if (getInputArray()) {
 		bubbleSort(inputArray);
-	} else return false;
+	} else {
+		alert('Error: Input array is empty');
+		return false
+	};
 });
-
-// bubbleSort([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-// bubbleSort([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
