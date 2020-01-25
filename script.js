@@ -188,48 +188,19 @@ $("#btn-sorting-algo").on("click", () => {
 });
 
 $("#btn-menu-close").on("click", () => {
-	$("#overlay").hide();
-	$(".menu").hide();
-	$("#menu-container").css("box-shadow", "none");
-	$("#menu-container").animate(
-		{
-			height: "30px",
-			width: "30px",
-			top: "10px",
-			left: "10px",
-			"border-radius": "50%"
-		},
-		200,
-		() => {
-			$("#menu-container").hide();
-			$("#btn-menu-open").css("visibility", "visible");
-		}
-	);
-	$("body").css("overflow", "auto");
+	$("#overlay").fadeOut();
+	$(".menu-container").toggleClass("hidden");
+	$(".btn-menu-open").toggleClass("show");
 });
 
 $("#overlay").on("click", () => {
 	$("#btn-menu-close").click();
 });
 
-$("#btn-menu-open").on("click", () => {
-	$("body").css("overflow", "hidden");
-	$("#overlay").show();
-	$("#btn-menu-open").css("visibility", "hidden");
-	$("#menu-container").show();
-	$("#menu-container").animate(
-		{
-			height: "80vh",
-			width: "50vw",
-			top: "10vh",
-			left: "25vw",
-			"border-radius": "10px"
-		},
-		200,
-		() => {
-			$("#menu-1").show();
-		}
-	);
+$(".btn-menu-open").on("click", () => {
+	$("#overlay").fadeIn();
+	$(".btn-menu-open").toggleClass("show");
+	$(".menu-container").toggleClass("hidden");
 });
 
 $("#btn-bubble-sort").on("click", () => {

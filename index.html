@@ -18,17 +18,14 @@
 	</head>
 	<body>
 		<div id="overlay"></div>
-		<div id="menu-container">
+		<div class="menu-container hidden">
 			<div id="btn-menu-close">
-				<div
-					id="btn-menu-close-line-one"
-					class="btn-menu-close-lines"
-				></div>
-				<div
-					id="btn-menu-close-line-two"
-					class="btn-menu-close-lines"
-				></div>
+				&times;
 			</div>
+			<div id="btn-menu-back">
+				&#10132;
+			</div>
+			
 			<div id="menu-1" class="menu">
 				<p>Select type of sorting algorithm</p>
 				<div class="btn-container-menu-1">
@@ -67,11 +64,12 @@
 			</div>
 		</div>
 		<div id="nav">
-			<div id="btn-menu-open"></div>
-			<div id="algo-name">Visualizer</div>
+			<div class="btn-menu-open show"></div>
+			<div id="algo-name">visualizer</div>
 		</div>
 		<div id="canvas">
 			<svg
+				class="svg-visualizer"
 				width="685.932470703125px"
 				height="178.439990234375px"
 				xmlns="http://www.w3.org/2000/svg"
