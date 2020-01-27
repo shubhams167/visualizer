@@ -12,10 +12,8 @@ body {
 
 #overlay {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	height: 100%;
+	width: 100%;
 	background-color: rgb(0, 0, 0, 0.8);
 	z-index: 1;
 	display: none;
@@ -42,22 +40,22 @@ body {
 	opacity: 0;
 }
 
-#btn-menu-back {
+.btn-menu-back {
 	font-size: 28px;
 	transform: rotateY(180deg);
 	position: absolute;
 	top: 0px;
 	cursor: pointer;
 	color: #555;
-	left: 5px;
-	padding: 5px 10px;
+	left: 0;
+	padding: 0px 10px;
 	height: 40px;
 	transition: all 0.3s;
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 }
 
-#btn-menu-back:hover {
+.btn-menu-back:hover {
 	color: #222;
 	animation: back-arrow-anim 0.7s infinite ease-in alternate;
 }
@@ -71,7 +69,7 @@ body {
 	}
 }
 
-#btn-menu-close {
+.btn-menu-close {
 	font-size: 32px;
 	font-weight: bold;
 	position: absolute;
@@ -86,9 +84,15 @@ body {
 	align-items: center;
 }
 
-#btn-menu-close:hover {
+.btn-menu-close:hover {
 	background-color: #e84342;
 	color: white;
+}
+
+.btn-menu-back.hidden,
+.btn-menu-close.hidden {
+	opacity: 0;
+	pointer-events: none;
 }
 
 .menu {
@@ -97,15 +101,15 @@ body {
 	text-align: center;
 }
 
-#menu-1 p {
-	font-size: 24px;
-	position: relative;
-	top: 50px;
+#menu-1 {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
-.btn-container-menu-1 {
-	position: relative;
-	top: 30%;
+#menu-1 p {
+	font-size: 18px;
+	padding: 10px 0;
 }
 
 .menu-1-btn {
@@ -115,10 +119,10 @@ body {
 	padding: 10px;
 	margin: 10px;
 	width: 400px;
-	height: 60px;
+	max-width: 90%;
 	color: #111;
 	cursor: pointer;
-	font-size: 20px;
+	font-size: 16px;
 	transition: all 0.3s;
 }
 
@@ -148,38 +152,37 @@ body {
 
 .menu-2-btn {
 	outline: none;
-	border: none;
-	background-color: #f5c469;
-	color: black;
+	border: 2px solid #f48016;
+	background-color: transparent;
+	color: #f48016;
 	cursor: pointer;
 	font-size: 16px;
-	border-radius: 10px;
 	padding: 10px 20px;
 }
 
 .menu-2-btn:hover {
-	background-color: #f3b431;
+	background-color: #f48016;
+	color: #fff;
 }
 
 #input-array {
 	outline: none;
 	width: 500px;
-	max-width: 100%;
+	max-width: 90%;
 	font-size: 18px;
-	border: 1px solid black;
-	border-radius: 5px;
+	border: 2px solid black;
 	padding: 5px 10px;
 	background-color: #fff;
+	transition: all 0.3s;
 }
 
 #input-array:focus {
-	border-color: #0a79df;
+	border-color: #f48016;
 }
 
 #nav {
 	height: 50px;
 	background-color: #222;
-	vertical-align: middle;
 }
 
 .btn-menu-open {
@@ -191,7 +194,7 @@ body {
 	cursor: pointer;
 	background: -webkit-linear-gradient(to right, #f5af19, #f12711);
 	background: linear-gradient(to right, #f5af19, #f12711);
-	position: relative;
+	display: inline-block;
 	z-index: 2;
 	transform: scale(0);
 	transition: all 0.3s;
@@ -209,17 +212,23 @@ body {
 }
 
 #algo-name {
-	font-family: "Courier New", Courier, monospace;
 	position: absolute;
 	top: 0;
-	text-align: center;
-	width: 100%;
-	height: 50px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+#algo-name span {
+	background: -webkit-linear-gradient(80deg, #f5af19, #f12711);
+	background: linear-gradient(80deg, #f5af19, #f12711);
+	color: transparent;
+	-webkit-background-clip: text;
+	background-clip: text;
+	font-family: "Courier New", Courier, monospace;
+	font-weight: bold;
+	font-size: 28px;
 	line-height: 50px;
-	color: white;
-	font-weight: 100;
 	letter-spacing: 2px;
-	font-size: 24px;
 }
 
 #canvas {
@@ -250,5 +259,26 @@ svg {
 	to {
 		opacity: 1;
 		transform: translateY(0px);
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.menu-container {
+		height: 100%;
+		width: 100%;
+		max-width: 100%;
+		background-color: #fff;
+	}
+	#menu-1 p,
+	#menu-2a p {
+		font-size: 16px;
+	}
+	.menu-1-btn,
+	.menu-2-btn {
+		font-size: 14px;
+	}
+
+	.btn-container-menu-2 {
+		grid-template-columns: auto auto;
 	}
 }

@@ -36,7 +36,7 @@ const getInputArray = () => {
 			return element.trim();
 		});
 	}
-	$("#btn-menu-close").click();
+	$(".btn-menu-close").click();
 	return true;
 };
 
@@ -182,19 +182,30 @@ const insertionSort = arr => {
 };
 
 // Add event listeners
-$("#btn-sorting-algo").on("click", () => {
-	$("#menu-1").hide();
-	$("#menu-2a").css("display", "flex");
+$(".btn-menu-back").on("click", () => {
+	$(".btn-menu-back").addClass("hidden");
+	$(".menu")
+		.hide()
+		.eq(0)
+		.fadeIn();
 });
 
-$("#btn-menu-close").on("click", () => {
+$(".btn-menu-close").on("click", () => {
 	$("#overlay").fadeOut();
 	$(".menu-container").toggleClass("hidden");
 	$(".btn-menu-open").toggleClass("show");
 });
 
 $("#overlay").on("click", () => {
-	$("#btn-menu-close").click();
+	$(".btn-menu-close").click();
+});
+
+$("#btn-sorting-algo").on("click", () => {
+	$("#menu-1").hide();
+	$("#menu-2a")
+		.fadeIn()
+		.css("display", "flex");
+	$(".btn-menu-back").removeClass("hidden");
 });
 
 $(".btn-menu-open").on("click", () => {
