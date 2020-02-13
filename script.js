@@ -4,8 +4,10 @@ var svgNS = "http://www.w3.org/2000/svg";
 // Constants
 const boxHeight = 60;
 const boxWidth = 60;
-const unsortedBoxColor = "#FF4848";
+const gap = 5; // Gap between boxes in px
+const unsortedBoxColor = "#DAE0E2";
 const sortedBoxColor = "#26ae60";
+const keyBoxColor = "#E74292";
 
 // Variables
 var inputArray;
@@ -41,7 +43,6 @@ const getInputArray = () => {
 };
 
 const displayArray = arr => {
-	let gap = 0; // Gap between boxes in px
 	let arrayWidth = (boxWidth + gap) * arr.length;
 	let arrayHeight = boxHeight;
 
@@ -52,15 +53,13 @@ const displayArray = arr => {
 
 	let boxG = $(document.createElementNS(svgNS, "g")).attr({
 		class: "g-boxes",
-		fill: unsortedBoxColor,
-		stroke: "black"
+		fill: unsortedBoxColor
 	});
 	svg.append(boxG);
 
 	let textG = $(document.createElementNS(svgNS, "g")).attr({
 		class: "g-text",
 		fill: "black",
-		stroke: "black",
 		"font-size": 24
 	});
 	svg.append(textG);
@@ -108,7 +107,9 @@ const clearCanvas = () => {
 };
 
 const bubbleSort = arr => {
+	$("#algo-name span").text("bubble sort");
 	clearCanvas();
+	// Display unsorted array
 	displayArray(arr);
 	for (let i = 0; i < arr.length; i++) {
 		for (let j = 0; j < arr.length - i - 1; j++) {
@@ -130,13 +131,50 @@ const bubbleSort = arr => {
 };
 
 const selectionSort = arr => {
+	$("#algo-name span").text("selection sort");
 	clearCanvas();
+	// Display unsorted array
 	displayArray(arr);
 	for (let i = 0; i < arr.length; i++) {
 		let min_idx = i;
 		for (let j = i + 1; j < arr.length; j++) {
 			if (arr[j] < arr[min_idx]) min_idx = j;
 		}
+
+		displayArray(arr);
+		// Color already sorted array
+		for (let j = 0; j < i; j++) {
+			$(`.box-${j}`)
+				.eq((i + 1) * 2 - 1)
+				.attr({ fill: sortedBoxColor });
+		}
+		// Get y coordinate of key box's text
+		let keyBoxTextY = parseFloat(
+			$(`.text-${min_idx}`)
+				.eq((i + 1) * 2 - 1)
+				.attr("y")
+		);
+		// Get y coordinate of key box
+		let keyBoxY = parseFloat(
+			$(`.box-${min_idx}`)
+				.eq((i + 1) * 2 - 1)
+				.attr("y")
+		);
+		// Get height of key box
+		let keyBoxHeight = parseFloat(
+			$(`.box-${min_idx}`)
+				.eq((i + 1) * 2 - 1)
+				.attr("height")
+		);
+		// Color and change y position of key box
+		$(`.box-${min_idx}`)
+			.eq((i + 1) * 2 - 1)
+			.attr({ fill: keyBoxColor, y: keyBoxY - keyBoxHeight - 10 });
+		// Change y position of key box's text
+		$(`.text-${min_idx}`)
+			.eq((i + 1) * 2 - 1)
+			.attr({ y: keyBoxTextY - keyBoxHeight - 10 });
+
 		// Swap minimum element with first element of unsorted part
 		let temp = arr[min_idx];
 		arr[min_idx] = arr[i];
@@ -146,18 +184,67 @@ const selectionSort = arr => {
 		// Color already sorted array
 		for (let j = 0; j <= i; j++) {
 			$(`.box-${j}`)
-				.eq(i + 1)
+				.eq((i + 1) * 2)
 				.attr({ fill: sortedBoxColor });
 		}
+		// Color key box
+		$(`.box-${i}`)
+			.eq((i + 1) * 2)
+			.attr({ fill: keyBoxColor });
+	}
+	// Display sorted array
+	displayArray(arr);
+	// Color last array elements
+	let len = $(`.box-${0}`).length;
+	for (let j = 0; j < arr.length; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({ fill: sortedBoxColor });
 	}
 };
 
 const insertionSort = arr => {
+	$("#algo-name span").text("insertion sort");
 	clearCanvas();
+	// Display unsorted array
 	displayArray(arr);
 	for (let i = 1; i < arr.length; i++) {
 		let key = arr[i];
 		let j = i - 1;
+
+		displayArray(arr);
+		// Color already sorted array
+		for (let j = 0; j < i; j++) {
+			$(`.box-${j}`)
+				.eq(2 * i - 1)
+				.attr({ fill: sortedBoxColor });
+		}
+		// Get y coordinate of key box's text
+		let keyBoxTextY = parseFloat(
+			$(`.text-${i}`)
+				.eq(2 * i - 1)
+				.attr("y")
+		);
+		// Get y coordinate of key box
+		let keyBoxY = parseFloat(
+			$(`.box-${i}`)
+				.eq(2 * i - 1)
+				.attr("y")
+		);
+		// Get height of key box
+		let keyBoxHeight = parseFloat(
+			$(`.box-${i}`)
+				.eq(2 * i - 1)
+				.attr("height")
+		);
+		// Color and change y position of key box
+		$(`.box-${i}`)
+			.eq(2 * i - 1)
+			.attr({ fill: keyBoxColor, y: keyBoxY - keyBoxHeight - 10 });
+		// Change y position of key box's text
+		$(`.text-${i}`)
+			.eq(2 * i - 1)
+			.attr({ y: keyBoxTextY - keyBoxHeight - 10 });
 
 		while (j >= 0 && arr[j] > key) {
 			arr[j + 1] = arr[j];
@@ -167,16 +254,23 @@ const insertionSort = arr => {
 
 		displayArray(arr);
 		// Color already sorted array
-		for (let j = 0; j < i; j++) {
+		for (let j = 0; j < i + 1; j++) {
 			$(`.box-${j}`)
-				.eq(i)
+				.eq(2 * i)
 				.attr({ fill: sortedBoxColor });
 		}
+		// Color key box
+		$(`.box-${j + 1}`)
+			.eq(2 * i)
+			.attr({ fill: keyBoxColor });
 	}
+	// Display sorted array
 	displayArray(arr);
+	// Color last array elements
+	let len = $(`.box-${0}`).length;
 	for (let j = 0; j < arr.length; j++) {
 		$(`.box-${j}`)
-			.eq(arr.length)
+			.eq(len - 1)
 			.attr({ fill: sortedBoxColor });
 	}
 };
