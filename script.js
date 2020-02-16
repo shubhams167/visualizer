@@ -8,6 +8,7 @@ const gap = 5; // Gap between boxes in px
 const unsortedBoxColor = "#DAE0E2";
 const sortedBoxColor = "#26ae60";
 const keyBoxColor = "#E74292";
+const keyBoxColorAlternative = "#E5B143";
 
 // Variables
 var inputArray;
@@ -169,11 +170,11 @@ const selectionSort = arr => {
 		// Color and change y position of key box
 		$(`.box-${min_idx}`)
 			.eq((i + 1) * 2 - 1)
-			.attr({ fill: keyBoxColor, y: keyBoxY - keyBoxHeight - 10 });
+			.attr({ fill: keyBoxColor, y: keyBoxY + keyBoxHeight / 2 });
 		// Change y position of key box's text
 		$(`.text-${min_idx}`)
 			.eq((i + 1) * 2 - 1)
-			.attr({ y: keyBoxTextY - keyBoxHeight - 10 });
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
 
 		// Swap minimum element with first element of unsorted part
 		let temp = arr[min_idx];
@@ -240,11 +241,11 @@ const insertionSort = arr => {
 		// Color and change y position of key box
 		$(`.box-${i}`)
 			.eq(2 * i - 1)
-			.attr({ fill: keyBoxColor, y: keyBoxY - keyBoxHeight - 10 });
+			.attr({ fill: keyBoxColor, y: keyBoxY + keyBoxHeight / 2 });
 		// Change y position of key box's text
 		$(`.text-${i}`)
 			.eq(2 * i - 1)
-			.attr({ y: keyBoxTextY - keyBoxHeight - 10 });
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
 
 		while (j >= 0 && arr[j] > key) {
 			arr[j + 1] = arr[j];
@@ -272,6 +273,135 @@ const insertionSort = arr => {
 		$(`.box-${j}`)
 			.eq(len - 1)
 			.attr({ fill: sortedBoxColor });
+	}
+};
+
+// Merge sort code starts from here
+const merge = (arr, l, m, r) => {
+	let sizeL = m - l + 1;
+	let sizeR = r - m;
+	let left = new Array(sizeL);
+	let right = new Array(sizeR);
+
+	displayArray(arr);
+	// Get number of rows drawn on canvas
+	let len = $(`.box-${0}`).length;
+	// Get y coordinate of key box's text
+	let keyBoxTextY = parseFloat(
+		$(`.text-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get y coordinate of key box
+	let keyBoxY = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get height of key box
+	let keyBoxHeight = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("height")
+	);
+	// Color and change pos of left array
+	for (let j = l; j <= m; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({ fill: keyBoxColor, y: keyBoxY + keyBoxHeight / 2 });
+		// Change y position of key box's text
+		$(`.text-${j}`)
+			.eq(len - 1)
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
+	}
+	// Color and change pos of right array
+	for (let j = m + 1; j <= r; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({
+				fill: keyBoxColorAlternative,
+				y: keyBoxY + keyBoxHeight / 2
+			});
+		// Change y position of key box's text
+		$(`.text-${j}`)
+			.eq(len - 1)
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
+	}
+
+	// Array to maintain after locations of elements
+	afterLoc = {};
+
+	// Copy data to temporary left and right arrays
+	for (let i = 0; i < sizeL; i++) left[i] = arr[l + i];
+	for (let i = 0; i < sizeR; i++) right[i] = arr[m + 1 + i];
+	// Merge temporary arrays back into arr
+	let i = 0;
+	let j = 0;
+	let k = l;
+	while (i < sizeL && j < sizeR) {
+		if (left[i] <= right[j]) {
+			arr[k] = left[i];
+			afterLoc[k] = "left";
+			i++;
+		} else {
+			arr[k] = right[j];
+			afterLoc[k] = "right";
+			j++;
+		}
+		k++;
+	}
+
+	// Copy the remaining elements of left
+	while (i < sizeL) {
+		arr[k] = left[i];
+		afterLoc[k] = "left";
+		i++;
+		k++;
+	}
+
+	// Copy the remaining elements of right
+	while (j < sizeR) {
+		arr[k] = right[j];
+		afterLoc[k] = "right";
+		j++;
+		k++;
+	}
+
+	// Display sorted array with left and right array elements colored
+	displayArray(arr);
+	// Get number of rows drawn on canvas
+	len = $(`.box-${0}`).length;
+	for (let j = 0; j < arr.length; j++) {
+		if (afterLoc[j]) {
+			if (afterLoc[j] == "left") {
+				$(`.box-${j}`)
+					.eq(len - 1)
+					.attr({ fill: keyBoxColor });
+			} else {
+				$(`.box-${j}`)
+					.eq(len - 1)
+					.attr({ fill: keyBoxColorAlternative });
+			}
+		}
+	}
+
+	// Display sorted left and right array
+	displayArray(arr);
+	// Get number of rows drawn on canvas
+	len = $(`.box-${0}`).length;
+	for (let j = l; j <= r; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({ fill: sortedBoxColor });
+	}
+};
+
+const mergeSort = (arr, l, r) => {
+	if (l < r) {
+		let m = Math.floor(l + (r - l) / 2);
+		mergeSort(arr, l, m);
+		mergeSort(arr, m + 1, r);
+		merge(arr, l, m, r);
 	}
 };
 
@@ -327,6 +457,17 @@ $("#btn-selection-sort").on("click", () => {
 $("#btn-insertion-sort").on("click", () => {
 	if (getInputArray()) {
 		insertionSort(inputArray);
+	} else {
+		return false;
+	}
+});
+
+$("#btn-merge-sort").on("click", () => {
+	if (getInputArray()) {
+		$("#algo-name span").text("merge sort");
+		clearCanvas();
+		displayArray(inputArray);
+		mergeSort(inputArray, 0, inputArray.length - 1);
 	} else {
 		return false;
 	}
