@@ -283,6 +283,7 @@ const merge = (arr, l, m, r) => {
 	let left = new Array(sizeL);
 	let right = new Array(sizeR);
 
+	// Display array before sorting and highlight left and right part
 	displayArray(arr);
 	// Get number of rows drawn on canvas
 	let len = $(`.box-${0}`).length;
@@ -334,10 +335,13 @@ const merge = (arr, l, m, r) => {
 	// Copy data to temporary left and right arrays
 	for (let i = 0; i < sizeL; i++) left[i] = arr[l + i];
 	for (let i = 0; i < sizeR; i++) right[i] = arr[m + 1 + i];
+
 	// Merge temporary arrays back into arr
 	let i = 0;
 	let j = 0;
 	let k = l;
+
+	// Merge left and right array
 	while (i < sizeL && j < sizeR) {
 		if (left[i] <= right[j]) {
 			arr[k] = left[i];
@@ -404,6 +408,142 @@ const mergeSort = (arr, l, r) => {
 		merge(arr, l, m, r);
 	}
 };
+// Merge sort code ends here
+
+// Quick sort code starts here
+var isSorted = {}; // Keeps track of sorted pivot positions
+
+const partition = (arr, l, r) => {
+	let pivot = arr[r]; // pivot element
+	let i = l - 1; // Index of smaller element
+
+	// Display array before partitioning
+	displayArray(arr);
+	// Get number of rows drawn on canvas
+	let len = $(`.box-${0}`).length;
+	// Get y coordinate of key box's text
+	let keyBoxTextY = parseFloat(
+		$(`.text-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get y coordinate of key box
+	let keyBoxY = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get height of key box
+	let keyBoxHeight = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("height")
+	);
+	// Color and change pos of array elements from index l to r
+	for (let j = l; j <= r; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({
+				fill: keyBoxColorAlternative,
+				y: keyBoxY + keyBoxHeight / 2
+			});
+		// Change y position of key box's text
+		$(`.text-${j}`)
+			.eq(len - 1)
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
+	}
+	$(`.box-${r}`)
+		.eq(len - 1)
+		.attr({
+			fill: keyBoxColor
+		});
+	// Color sorted elements of the array
+	for (let j = 0; j < arr.length; j++) {
+		if (isSorted[j]) {
+			$(`.box-${j}`)
+				.eq(len - 1)
+				.attr({
+					fill: sortedBoxColor
+				});
+		}
+	}
+
+	for (let j = l; j <= r - 1; j++) {
+		if (arr[j] < pivot) {
+			i++; // increment index of smaller element
+			let temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+	}
+	let temp = arr[i + 1];
+	arr[i + 1] = arr[r];
+	arr[r] = temp;
+
+	// Display array after partitioning
+	displayArray(arr);
+	// Get number of rows drawn on canvas
+	len = $(`.box-${0}`).length;
+	// Get y coordinate of key box's text
+	keyBoxTextY = parseFloat(
+		$(`.text-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get y coordinate of key box
+	keyBoxY = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("y")
+	);
+	// Get height of key box
+	keyBoxHeight = parseFloat(
+		$(`.box-${0}`)
+			.eq(len - 1)
+			.attr("height")
+	);
+	// Color and change pos array elements from index l to r
+	for (let j = l; j <= r; j++) {
+		$(`.box-${j}`)
+			.eq(len - 1)
+			.attr({
+				fill: keyBoxColorAlternative,
+				y: keyBoxY + keyBoxHeight / 2
+			});
+		// Change y position of key box's text
+		$(`.text-${j}`)
+			.eq(len - 1)
+			.attr({ y: keyBoxTextY + keyBoxHeight / 2 });
+	}
+	// Color pivot
+	$(`.box-${i + 1}`)
+		.eq(len - 1)
+		.attr({
+			fill: keyBoxColor
+		});
+	// Color sorted elements of the array
+	for (let j = 0; j < arr.length; j++) {
+		if (isSorted[j]) {
+			$(`.box-${j}`)
+				.eq(len - 1)
+				.attr({
+					fill: sortedBoxColor
+				});
+		}
+	}
+	// Element at index i + 1 is now at its sorted pos
+	isSorted[i + 1] = true;
+	return i + 1;
+};
+
+const quickSort = (arr, l, r) => {
+	if (l <= r) {
+		let p = partition(arr, l, r);
+		quickSort(arr, l, p - 1);
+		quickSort(arr, p + 1, r);
+	}
+};
+// Quick sort code ends here
 
 // Add event listeners
 $(".btn-menu-back").on("click", () => {
@@ -468,6 +608,31 @@ $("#btn-merge-sort").on("click", () => {
 		clearCanvas();
 		displayArray(inputArray);
 		mergeSort(inputArray, 0, inputArray.length - 1);
+	} else {
+		return false;
+	}
+});
+
+$("#btn-quick-sort").on("click", () => {
+	if (getInputArray()) {
+		$("#algo-name span").text("quick sort");
+		clearCanvas();
+		displayArray(inputArray);
+		quickSort(inputArray, 0, inputArray.length - 1);
+		displayArray(inputArray);
+		// Get number of rows drawn on canvas
+		let len = $(`.box-${0}`).length;
+		// Color sorted elements of the array
+		for (let j = 0; j < inputArray.length; j++) {
+			if (isSorted[j]) {
+				$(`.box-${j}`)
+					.eq(len - 1)
+					.attr({
+						fill: sortedBoxColor
+					});
+			}
+		}
+		isSorted = {}; // Reset isSorted
 	} else {
 		return false;
 	}
